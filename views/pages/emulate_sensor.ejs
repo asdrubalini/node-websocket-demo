@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+
+    <body class="container">
+        <h2>Emulating sensor with id:</h2>
+        <span id="sensor-id"></span>
+
+        <script src="socket.io.js"></script>
+        <script>
+            var socket = io();
+
+            const random_float = (min, max) => {
+                return Math.random() * (max - min) + min;
+            };
+
+            function uuidv4() {
+                return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                );
+            }
+
+            let uuid = uuidv4();
+            document.getElementById("sensor-id").innerText = uuid;
+
+            socket.on("retrieve_sensor_data", function (_) {
+                let random_temperature = random_float(20, 24);
+                let payload = {
+                    name: uuid,
+                    data: random_temperature,
+                };
+
+                socket.emit("sensor_temperature", payload);
+                console.log("sending data...");
+            });
+        </script>
+    </body>
+</html>

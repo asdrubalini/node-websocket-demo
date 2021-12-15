@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include("../partials/head"); %>
+    </head>
+
+    <body class="container">
+        <b>Apri la console per vedere gli eventi in tempo reale</b>
+    </body>
+
+    <script src="socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        let sensor_data = {};
+        
+        fetch("/data").then((response) => {
+            return response.json();
+        }).then((data) => {
+            sensor_data = data;
+        });
+
+        // Request data
+        setInterval(() => {
+            socket.emit("request_data_from_sensors");
+        }, 5000);
+
+        socket.on("new_data", function (data) {
+            sensor_data[data.name] = data.data;
+            console.log(data);
+        });
+
+    </script>
+</html>

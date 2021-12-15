@@ -1,0 +1,2 @@
+-   Each sensor connects to the websocket
+-   When a sensor receive a certain command, it sends back some data
